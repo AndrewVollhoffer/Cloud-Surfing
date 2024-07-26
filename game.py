@@ -92,19 +92,23 @@ pygame.time.set_timer(SPAWN_RAINDROP, 5000, 0)
 # GAME_OVER = pygame.USEREVENT + 2
 # pygame.time.set_timer(pygame.USEREVENT + 2, 10000, 1)
 
-# Initialize music player
-pygame.mixer.music.load("assets/floating-cat.ogg")
+# Initialize music player and droplet sound
+# Music
+GAME_MUSIC = pygame.mixer.music.load("assets/floating-cat.ogg")
 # Music from #Uppbeat (free for Creators!):
 # https://uppbeat.io/t/michael-grubb/floating-cat
-pygame.mixer.music.set_volume(0.25)
+pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
+
+# Sound
+DROP_SOUND = pygame.mixer.Sound("assets/digital-drops.mp3")
+DROP_SOUND.set_volume(0.25)
 
 drop_counter  = 0
 player_scale = 1.05
 
 running = True
 
-# Play the music
 
 while running:
 
@@ -137,6 +141,7 @@ while running:
             # P1.mask = pygame.mask.from_surface(P1.image)
             # P1.rect.y = P1.rect.y / player_scale
             # Spawn raindrop and add score
+            DROP_SOUND.play(0, 1000)
             instance.rect.center = (random.randint(0, 690), -10)
             SCORE.value += 1    
 
