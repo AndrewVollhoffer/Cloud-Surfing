@@ -18,8 +18,6 @@ CANVAS = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Cloud Surfing")
 pygame.display.set_icon(pygame.image.load("assets/cloud.png"))
 
-running = True
-
 class Collectables(pygame.sprite.Sprite):
 
     raindrops = []
@@ -49,15 +47,15 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load("assets/cloud.png"), (150, 100))
         pygame.Surface.convert_alpha(self.image)
         self.rect = self.image.get_rect()
-        self.rect.center = (180, 320)
+        self.rect.center = (350, 320)
         self.mask = pygame.mask.from_surface(self.image)
 
     # Move the player left or right
     def update(self):
-        if self.rect.left > 0 & self.rect.left < SCREEN_WIDTH:
+        if self.rect.left > -100: #& self.rect.left < SCREEN_WIDTH - 100:
             if key_pressed[K_LEFT] or key_pressed[K_a]:
                 self.rect.move_ip(-5, 0)
-        if self.rect.right > 0 & self.rect.left < SCREEN_WIDTH:
+        if self.rect.right < 800: # & self.rect.left < SCREEN_WIDTH:
             if key_pressed[K_RIGHT] or key_pressed[K_d]:
                 self.rect.move_ip(5, 0)
 
@@ -79,21 +77,34 @@ class Score(pygame.sprite.Sprite):
 
     def draw(self, surface):
         surface.blit(self.image, (10, 10))
+        
 
-class Timer():
-    def __init__(self):
-        self.timer = 0
-
-    def update(self):
-        self.timer += 1 / FPS
-
+# Initialize player, first raindrop, and score
 P1 = Player()
 RAINDROP = Collectables()
 SCORE = Score()
+
+# Create raindrop spawner event and timer
 SPAWN_RAINDROP = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWN_RAINDROP, 5000, 0)
 
+# Game over event and timer
+# GAME_OVER = pygame.USEREVENT + 2
+# pygame.time.set_timer(pygame.USEREVENT + 2, 10000, 1)
+
+# Initialize music player
+pygame.mixer.music.load("assets/floating-cat.ogg")
+# Music from #Uppbeat (free for Creators!):
+# https://uppbeat.io/t/michael-grubb/floating-cat
+pygame.mixer.music.set_volume(0.25)
+pygame.mixer.music.play(-1)
+
 drop_counter  = 0
+player_scale = 1.05
+
+running = True
+
+# Play the music
 
 while running:
 
@@ -113,13 +124,19 @@ while running:
             pygame.quit()
             sys.exit()
 
-        #Check for raindrop spawn timer
+        #Check for raindrop spawn
         if event.type == SPAWN_RAINDROP:
-            raindrop = Collectables()        
+            drop_counter += 1
+            raindrop = Collectables()    
     
     # Check for player and raindrop collision
     for instance in Collectables.raindrops:
         if pygame.sprite.collide_mask(P1, instance):
+            # Change size funtionality
+            # P1.image = pygame.transform.smoothscale_by(P1.image, player_scale)
+            # P1.mask = pygame.mask.from_surface(P1.image)
+            # P1.rect.y = P1.rect.y / player_scale
+            # Spawn raindrop and add score
             instance.rect.center = (random.randint(0, 690), -10)
             SCORE.value += 1    
 
