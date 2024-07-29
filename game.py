@@ -28,11 +28,12 @@ class Collectables(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(0, 690), -10)
         self.mask = pygame.mask.from_surface(self.image)
+        self.drop_rate = (random.randint(2, 6))
         Collectables.raindrops.append(self)
 
     def update(self):
         if self.rect.top < 710:
-            self.rect.y += 3
+            self.rect.y += self.drop_rate
         if self.rect.top > 405:
             self.rect.center = (random.randint(0, 690), -10)
     
